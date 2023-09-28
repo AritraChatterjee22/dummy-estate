@@ -27,3 +27,6 @@
 
 # Ignore Node.js package lock file
 **/package-lock.json
+
+# Ignore environment files
+**/.env
