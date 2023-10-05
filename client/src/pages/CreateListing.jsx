@@ -5,7 +5,7 @@ import {useSelector} from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 export default function CreateListing() {
-  const {currentUser} = useSelector(state => state.user)
+  const {currentUser} = useSelector((state) => state.user)
   const navigate = useNavigate()
   const [files, setFiles] = useState([])
   const [formData, setFormData] = useState({
@@ -100,8 +100,14 @@ export default function CreateListing() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      if(formData.imageUrls.length < 1) return setError('You must upload atleast one image')
-      if(+formData.regularPrice < +formData.discountPrice) return setError('Discount price must be lower than regular price')
+      if(formData.imageUrls.length < 1){
+        setError('You must upload atleast one image')
+        return
+      }       
+      if(+formData.regularPrice < +formData.discountPrice){
+        setError('Discount price must be lower than regular price')
+        return
+      }       
       setLoading(true)
       setError(false)
       const res = await fetch('/api/listing/create', {
@@ -111,15 +117,17 @@ export default function CreateListing() {
         },
         body: JSON.stringify({
           ...formData,
-          userRef: currentUser._id
+          userRef: currentUser._id,
+          discount: formData.discountPrice
         })
       })
       const data = await res.json()
+      console.log('Recieved data:', data)
       setLoading(false)
       if(data.success === false){
         setError(data.message)
       }
-      navigate(`/listing/${data._id}`)
+      navigate(`/listing/${data._id || ''}`)
     } catch (error) {
       setError(error.message)
       setLoading(false)
@@ -250,7 +258,9 @@ export default function CreateListing() {
               />
               <div className='flex flex-col items-center'>
                 <p>Regular Price</p>
+                {formData.type === 'rent' && (
                 <span className='text-xs'>(₹ / month)</span>
+                )}
               </div>
             </div>
             {formData.offer && (
@@ -267,7 +277,9 @@ export default function CreateListing() {
               />
               <div className='flex flex-col items-center'>
                 <p>Discounted Price</p>
+                {formData.type === 'rent' && (
                 <span className='text-xs'>(₹ / month)</span>
+                )}
               </div>
             </div>
             )}
@@ -283,7 +295,10 @@ export default function CreateListing() {
           </p>
           <div className='flex gap-4'>
             <input
-              onChange={(e)=> setFiles(e.target.files)}
+              onChange={(e)=>{
+                setFiles(e.target.files)
+                setImageUploadError(false)
+              }}
               className='p-3 border border-gray-300 rounded w-full'
               type='file'
               id='images'
@@ -311,8 +326,8 @@ export default function CreateListing() {
             ))
           }
           <button
+            type='submit'
             disabled={loading || uploading}
-            type='button'
             className='p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80'>
             {loading ? 'Creating...' : 'Create Listing'}
           </button>
