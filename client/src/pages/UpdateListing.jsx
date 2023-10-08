@@ -135,7 +135,7 @@ export default function CreateListing() {
         body: JSON.stringify({
           ...formData,
           userRef: currentUser._id,
-          // discount: formData.discountPrice
+          discount: formData.discountPrice
         })
       })
       console.log('Response:', res);
@@ -149,12 +149,14 @@ export default function CreateListing() {
       if(data.success === false){
         setError(data.message)
       }
+      console.log('Navigating to:', `/listing/${data._id || ''}`);
       navigate(`/listing/${data._id || ''}`)
     } catch (error) {
       setError(error.message)
       setLoading(false)
     }
   }
+
 
   // console.log(files)
   return (
