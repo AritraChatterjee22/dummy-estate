@@ -66,7 +66,7 @@ export const getListing = async (req, res, next) => {
   }
 }
 
-
+//have to change sort logic later
 export const getListings = async (req, res, next) => {
   try {
     const limit = parseInt(req.query.limit) || 9
