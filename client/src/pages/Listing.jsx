@@ -16,6 +16,7 @@ export default function Listing() {
   const [error, setError] = useState(false)
   const [copied, setCopied] = useState(false)
   const [contact, setContact] = useState(false)
+  // const [showMore, setShowMore] = useState(false)
   const {currentUser} = useSelector((state) => state.user)
   const params = useParams()
   useEffect(() => {
@@ -24,6 +25,9 @@ export default function Listing() {
         setLoading(true)
         const res = await fetch(`/api/listing/get/${params.listingId}`)
         const data = await res.json()
+        // if(data.length > 8){
+        //   setShowMore(true)
+        // }
         if(data.success === false){
           setError(true)
           setLoading(false)
