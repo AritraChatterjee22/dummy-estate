@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import BrokenHouse from '../assets/BrokenHouse.png'
+import ListingItem from '../components/ListingItem'
+
 
 export default function Search() {
   const navigate = useNavigate()
@@ -219,10 +222,24 @@ export default function Search() {
         </form>
       </div>
       {/* Right side */}
-      <div className=''>
+      <div className='flex-1'>
         <h1 className='text-3xl font-semibold border-b p-3 text-slate-700 mt-5'>
           Listing Results:
         </h1>
+        <div className='p-7 flex flex-wrap gap-4'>
+          {!loading && listings.length === 0 && (
+            <>
+            {/*<img src={BrokenHouse} alt="Error Image" className="w-40 h-auto mb-4"/>*/}
+              <p className='text-xl text-slate-700 text-center w-full'>No Listing found</p>
+            </> 
+          )}
+          {loading && (
+            <p className='text-xl text-slate-700 text-center w-full'>Loading...</p>
+          )}
+          {!loading && listings && listings.map((listing) => (
+            <ListingItem key={listing._id} listing={listing}/>
+          ))}
+        </div>
       </div>
     </div>
   )
