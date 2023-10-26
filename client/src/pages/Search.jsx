@@ -112,14 +112,20 @@ export default function Search() {
   //TODO change sort logic in backend
   const handleSubmit = (e) => {
     e.preventDefault()
+    const { sort, order } = sidebarData;
+
+    // Handle the "latest" option
+    const sortParam = sort === 'created_at' && order === 'desc' ? 'latest' : sort;
+
     const urlParams = new URLSearchParams()
     urlParams.set('searchTerm', sidebarData.searchTerm)
     urlParams.set('type', sidebarData.type)
     urlParams.set('parking', sidebarData.parking)
     urlParams.set('furnished', sidebarData.furnished)
-    // urlParams.set('sort', sidebarData.sort)
-    // urlParams.set('order', sidebarData.order)
-    urlParams.set('sort', `${sidebarData.sort}_${sidebarData.order}`);
+    urlParams.set('sort', sortParam)
+    urlParams.set('order', sidebarData.order)
+
+    // urlParams.set('sort', `${sidebarData.sort}_${sidebarData.order}`);
     const searchQuery = urlParams.toString()
     navigate(`/search?${searchQuery}`)
   }
