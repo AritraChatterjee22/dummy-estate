@@ -93,8 +93,25 @@ export const getListings = async (req, res, next) => {
     }
 
     const searchTerm = req.query.searchTerm || ''
-    const sort = req.query.sort || 'createdAt'
-    const order = req.query.order || 'desc'
+    // const sort = req.query.sort || 'createdAt'
+    // const order = req.query.order || 'desc'
+    
+    //trying to fix sorting
+    const sortOption = req.query.sort;
+    const order = req.query.order || 'desc';
+    console.log('Received sort option:', sortOption);
+    console.log('Received order:', order);
+
+    let sort = {};
+
+    if (sortOption === 'oldest') {
+      sort = { createdAt: 'asc' };
+    } else if (sortOption === 'latest') {
+      sort = { createdAt: 'desc' };
+    } else {
+      const order = req.query.order || 'desc';
+      sort[sortOption] = order;
+    }
 
     const listings = await Listing.find({
       name: {$regex: searchTerm, $options: 'i'},
@@ -102,10 +119,9 @@ export const getListings = async (req, res, next) => {
       furnished,
       parking,
       type,
-    }).sort(
-        {[sort]: order}
-      ).limit(limit).skip(startIndex)
-     
+    }).sort(sort).limit(limit).skip(startIndex)
+
+
     return res.status(200).json(listings)
 
   } catch (error) {
